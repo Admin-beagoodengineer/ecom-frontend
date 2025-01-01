@@ -5,10 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { RootState, server } from "../redux/store";
 import toast from "react-hot-toast";
-import { saveShippingInfo } from "../redux/reducer/cartReducer";
+import { resetCart, saveShippingInfo } from "../redux/reducer/cartReducer";
 import { ShippingInfo } from "../types/types";
+import { responseToast } from "../utils/features";
+import { NewOrderRequest } from "../types/api.types";
+import { load } from '@cashfreepayments/cashfree-js';
+import { useNewOrderMutation } from "../redux/api/orderAPI";
 
-function Shipping() {
+function ShippingCashfree() {
     const {cartItems, coupon} = useSelector((state: RootState) => state.cartReducer);
     const { user } = useSelector((state: RootState) => state.userReducer);
     const [errors, setErrors] = useState<string | null>(null);
@@ -24,6 +28,95 @@ function Shipping() {
         country: "",
         pinCode: "",
     });
+
+    const [newOrder] = useNewOrderMutation();
+    const {shippingInfo: backendShippingInfo, cartItems: backendCartItems, subTotal, tax, discount, shippingCharges, total} = useSelector((state: RootState) => state.cartReducer);
+
+    let cashfree: any;
+
+    let initializeSDK = async function () {
+        cashfree = await load({
+            mode: 'production'
+        });
+    }
+    
+    initializeSDK();
+
+    const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
+    const getSessionId = async () => {
+        try {
+            const body = {
+            shippingInfo: backendShippingInfo,
+            orderItems: backendCartItems,
+            subTotal,
+            tax,
+            discount,
+            shippingCharges,
+            total,
+            user
+            };
+            // console.log('body', body);
+    
+            const res = await axios.post(`${server}/api/v1/payment/sessionId`, body);
+
+            return {
+                sessionId: res.data.payment_session_id,
+                orderId: res.data.order_id
+            };
+        } catch (error) {
+            console.error('Cashfree Checkout Error: ', error);
+        }
+    };
+
+    const verifyCashfreePayment = async (orderId: string) => {
+        try {
+            const orderData: NewOrderRequest = {
+                shippingInfo,
+                orderItems: cartItems, 
+                subTotal, 
+                tax, 
+                discount, 
+                shippingCharges, 
+                total,
+                user: user?._id!
+            };
+
+            // console.log('ORDER ID: ', orderId);
+
+            let res = await axios.post(`${server}/api/v1/payment/verify`, {orderId});
+            // console.log("RES IN VERIFY: ", res);
+
+            if(res && res.data){
+                const res = await newOrder(orderData);
+                dispatch(resetCart());
+                responseToast(res, navigate, "/orders");
+            }
+        } catch (error) {
+            // console.log('Verify Cashfree Payment Error: ', error);
+        }
+    }
+
+    const createCashfreeOrder = async () => {
+        // console.log('reached fn')
+        try {
+            let sessionIdObj = await getSessionId();
+            // console.log("SESSION ID: ", sessionIdObj?.sessionId);
+            // console.log('ORDER ID IN CHECKOUT FUNCTION: ', sessionIdObj?.orderId);
+            let checkoutOptions = {
+                paymentSessionId: sessionIdObj?.sessionId,
+                redirectTarget: "_modal", // If we don't put this, we'll be redirected to cashfree website
+            }
+            cashfree.checkout(checkoutOptions).then((res: any) => {
+                if(!res.error) console.log("Cashfree payment initiated");
+                else return toast.error("Cashfree payment failed");
+                verifyCashfreePayment(sessionIdObj?.orderId);
+            });
+            setIsProcessing(false);
+        } catch (error) {
+            // console.log('Create Cashfree Order Error: ', error);
+        }
+    };
 
     function isDataValid(data: ShippingInfo): boolean {
         // Validate phone: Must be a 10-digit number
@@ -76,7 +169,7 @@ function Shipping() {
         dispatch(saveShippingInfo(shippingInfo));
 
         try {
-            const {data} = await axios.post(`${server}/api/v1/payment/create?id=${user?._id}`, 
+            await axios.post(`${server}/api/v1/payment/create?id=${user?._id}`, 
             {
                 items: cartItems,
                 shippingInfo,
@@ -88,10 +181,7 @@ function Shipping() {
                 }
             });
 
-            // To navigate to checkout page before choosing payment option
-            navigate("/pay", {
-                state: data.clientSecret
-            });
+            createCashfreeOrder();
 
         } catch (error) {
             // console.log(error);
@@ -123,10 +213,10 @@ function Shipping() {
             <input required type="number" placeholder="Pin Code" name="pinCode" value={shippingInfo.pinCode} onChange={changeHandler} />
             <p style={{color: 'red', height: '10px', marginTop: '-15px', textAlign: 'center'}}>{errors}</p>
 
-            <button type="submit">Pay Now</button>
+            <button type="submit">{isProcessing ? "Processing...." : "Pay using Cashfree"}</button>
         </form>
     </div>
   )
 }
 
-export default Shipping
+export default ShippingCashfree

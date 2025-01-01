@@ -1,0 +1,58 @@
+// Footer.scss
+
+.home-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2-column layout */
+  gap: 1rem; /* Space between columns */
+  padding: 1rem;
+  background-color: #f4f4f4;
+  border-top: 1px solid #ddd;
+
+  div {
+    display: flex;
+    justify-content: space-between; /* Align text left and link right */
+    align-items: center; /* Center content vertically */
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 0; /* Remove margin */
+    }
+
+    a {
+      display: inline-block;
+    }
+
+    img {
+      width: 30px;
+      height: auto;
+    }
+  }
+}
+
+// Media Queries for Mobile Devices
+@media (max-width: 768px) {
+  .home-footer {
+    grid-template-columns: 1fr; /* Stack items vertically on mobile */
+  }
+
+  .home-footer div {
+    flex-direction: column; /* Stack text and download link */
+    align-items: flex-start; /* Align items to the left */
+    text-align: left; /* Ensure text is left-aligned */
+  }
+
+  .home-footer img {
+    margin-top: 0.5rem; /* Add spacing between text and image */
+  }
+}

@@ -31,10 +31,10 @@ const Dashboard = () => {
       try {
         const response = await axios.get(`${server}/api/v1/dashboard/orderStatus`);
         setIsChecked(response.data.orderStatusInfo);
-        console.log('ORDER STATUS INFO: ', response.data.orderStatusInfo);
+        // console.log('ORDER STATUS INFO: ', response.data.orderStatusInfo);
       } catch (error) {
         toast.error('Failed to fetch initial button state');
-        console.log('Failed to fetch initial button state', error);
+        // console.log('Failed to fetch initial button state', error);
       }
     };
     fetchInitialState();
@@ -51,7 +51,7 @@ const Dashboard = () => {
         toast.success("Successfully updated Order Status")
       } catch (error) {
         toast.error('Failed to update Order Status');
-        console.log('STATUS POST ERROR: ', error);
+        // console.log('STATUS POST ERROR: ', error);
       }
     }, 1000, { trailing: false }), 
     []

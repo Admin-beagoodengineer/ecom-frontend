@@ -96,7 +96,7 @@ const ProductDetails = () => {
     responseToast(res, null, "");
   };
 
-  console.log('review', reviewsResponse);
+  // console.log('review', reviewsResponse);
 
   return (
     <div className="product-details">

@@ -5,6 +5,8 @@ import { User } from "../types/types";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 interface PropsType {
   user: User | null,
@@ -13,6 +15,7 @@ interface PropsType {
 function Header({ user }: PropsType) {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const {cartItems} = useSelector((state: RootState) => state.cartReducer);
 
   const logoutHandler = async () => {
     try {
@@ -33,14 +36,19 @@ function Header({ user }: PropsType) {
         <div className="header-right">
           <Link onClick={() => setIsOpen(false)} to={"/"}>Home</Link>
           <Link onClick={() => setIsOpen(false)} to={"/search"}><FaSearch /></Link>
-          <Link onClick={() => setIsOpen(false)} to={"/cart"}><FaShoppingCart /></Link>
+          <Link onClick={() => setIsOpen(false)} to={"/cart"}>
+            <div className="nav-cart">
+              <FaShoppingCart />
+              {cartItems && cartItems.length > 0 && <div className="cart-item-number">{cartItems.length}</div>}
+            </div>
+          </Link>
           {
             user?._id ? (
               <>
                 <button onClick={() => setIsOpen(prev => !prev)}>
                   <FaUser />
                 </button>
-                <dialog style={{ zIndex: '999' }} open={isOpen}>
+                <dialog style={{ zIndex: '999', marginTop: '50px', marginLeft: '10px' }} open={isOpen}>
                   <div>
                     {
                       user.role === "admin" && (

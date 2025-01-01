@@ -24,18 +24,18 @@ const columns: Column<DataType>[] = [
     Header: "Avatar",
     accessor: "user",
   },
-  {
-    Header: "Amount",
-    accessor: "amount",
-  },
-  {
-    Header: "Discount",
-    accessor: "discount",
-  },
-  {
-    Header: "Quantity",
-    accessor: "quantity",
-  },
+  // {
+  //   Header: "Amount",
+  //   accessor: "amount",
+  // },
+  // {
+  //   Header: "Discount",
+  //   accessor: "discount",
+  // },
+  // {
+  //   Header: "Quantity",
+  //   accessor: "quantity",
+  // },
   {
     Header: "Status",
     accessor: "status",
@@ -76,7 +76,7 @@ const Transaction = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       refetch();
-      console.log('refetched');
+      // console.log('refetched');
     }, 10000); // 300,000 ms = 5 minutes
 
     return () => clearInterval(interval); // Cleanup on unmount
@@ -113,8 +113,8 @@ const Transaction = () => {
       // Check for new orders
       if (orders.length > numOfOrders) {
         const newOrders = orders.slice(numOfOrders);
-        console.log("NEW ORDERS: ", newOrders);
-        console.log("NUM OF ORDERS: ", numOfOrders);
+        // console.log("NEW ORDERS: ", newOrders);
+        // console.log("NUM OF ORDERS: ", numOfOrders);
 
         // Toast and play sound for each new order
         newOrders.forEach((order) => {

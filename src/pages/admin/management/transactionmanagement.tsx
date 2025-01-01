@@ -12,6 +12,7 @@ import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 
 
+
 const TransactionManagement = () => {
   const defaultData:Order = {
     shippingInfo: {
@@ -71,8 +72,8 @@ const TransactionManagement = () => {
     });
     responseToast(res, navigate, "/admin/transaction");
   };
-const contentRef = useRef<HTMLDivElement>(null);
-const reactToPrintFn = useReactToPrint({ contentRef });
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   if(isError) return <Navigate to={"/404"} />
 
@@ -113,9 +114,14 @@ const reactToPrintFn = useReactToPrint({ contentRef });
               <h1>Order Info</h1>
               <h5 >User Info</h5>
               <div ref={contentRef} className="print-content">
+                  <h1 className="centered-title">H2 Canteen</h1>
                 <p><span>Name:</span> {name}</p>
                 <p><span>Order Number: {lastThree}</span></p>
-                <p><span>Order:</span> {orderItems.map((i)=>(i.name))}</p>
+                  <p><span>Order:</span> <div className="orderItems">{orderItems.map((item) => (
+                    <div key={item.name}>
+                      {item.name}: {item.quantity}
+                    </div>
+                  ))}</div></p>
                 <p>
                   {/* <span>Address:</span> {`${address}, ${city}, ${state}, ${country} ${pinCode}`} <br /> */}
                   <span>Address:</span> {`${address}, ${city}`} <br />

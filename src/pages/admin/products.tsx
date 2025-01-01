@@ -29,14 +29,14 @@ const columns: Column<DataType>[] = [
     Header: "Name",
     accessor: "name",
   },
-  {
-    Header: "Price",
-    accessor: "price",
-  },
-  {
-    Header: "Stock",
-    accessor: "stock",
-  },
+  // {
+  //   Header: "Price",
+  //   accessor: "price",
+  // },
+  // {
+  //   Header: "Stock",
+  //   accessor: "stock",
+  // },
   {
     Header: "Action",
     accessor: "action",

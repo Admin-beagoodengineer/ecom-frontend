@@ -52,7 +52,7 @@ const DiscountManagement = () => {
         }
       } 
       catch (error) {
-        console.log(error);
+        // console.log(error);
       }
       finally{
         setBtnLoading(false);
@@ -80,7 +80,7 @@ const DiscountManagement = () => {
         }
       } 
       catch (error) {
-        console.log(error);
+        // console.log(error);
       }
       finally{
         setBtnLoading(false);
