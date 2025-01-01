@@ -42,7 +42,7 @@ const NewDiscount = () => {
         navigate("/admin/discount");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setBtnLoading(false);
     }

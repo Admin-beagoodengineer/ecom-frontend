@@ -48,12 +48,12 @@ const CheckoutForm = () => {
             total,
             user
             };
-            console.log('body', body);
+            // console.log('body', body);
     
             const res = await axios.post(`${server}/api/v1/payment/sessionId`, body);
-            console.log('res', res);
+            // console.log('res', res);
     
-            console.log('Session ID response: ', res.data);
+            // console.log('Session ID response: ', res.data);
             // setOrderId(temp);
             // console.log("NEW ORDER ID IN GET_SESSION_ID: ", temp);
             // console.log("ORDER ID IN GET_SESSION_ID: ", orderId);
@@ -116,10 +116,10 @@ const CheckoutForm = () => {
                 user: user?._id!
             };
 
-            console.log('ORDER ID: ', orderId);
+            // console.log('ORDER ID: ', orderId);
 
             let res = await axios.post(`${server}/api/v1/payment/verify`, {orderId});
-            console.log("RES IN VERIFY: ", res);
+            // console.log("RES IN VERIFY: ", res);
 
             if(res && res.data){
                 const res = await newOrder(orderData);
@@ -127,16 +127,16 @@ const CheckoutForm = () => {
                 responseToast(res, navigate, "/orders");
             }
         } catch (error) {
-            console.log('Verify Cashfree Payment Error: ', error);
+            // console.log('Verify Cashfree Payment Error: ', error);
         }
     }
 
     const createCashfreeOrder = async () => {
-        console.log('reached fn')
+        // console.log('reached fn')
         try {
             let sessionIdObj = await getSessionId();
-            console.log("SESSION ID: ", sessionIdObj?.sessionId);
-            console.log('ORDER ID IN CHECKOUT FUNCTION: ', sessionIdObj?.orderId);
+            // console.log("SESSION ID: ", sessionIdObj?.sessionId);
+            // console.log('ORDER ID IN CHECKOUT FUNCTION: ', sessionIdObj?.orderId);
             let checkoutOptions = {
                 paymentSessionId: sessionIdObj?.sessionId,
                 redirectTarget: "_modal", // If we don't put this, we'll be redirected to cashfree website
@@ -148,7 +148,7 @@ const CheckoutForm = () => {
             });
             setIsProcessing(false);
         } catch (error) {
-            console.log('Create Cashfree Order Error: ', error);
+            // console.log('Create Cashfree Order Error: ', error);
         }
     };
 

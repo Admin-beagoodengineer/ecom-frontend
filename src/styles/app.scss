@@ -47,6 +47,7 @@ $color3: rgb(0, 104, 136);
 @import "login";
 @import "search";
 @import "productDetails";
+@import "orderDetails";
 @import "admin-styles/dashboard";
 @import "admin-styles/products";
 @import "admin-styles/chart";
@@ -65,11 +66,22 @@ $color3: rgb(0, 104, 136);
   }
 }
 
+// Main Body (everything except navbar/header)
+.main-body{
+  margin-top: 60px;
+}
+
 // Header
 .header{
     @include flex(row, space-between, stretch);
+    position: fixed;
+    width: 100%;
+    z-index: 9;
+    margin-top: -60px;
+    background-color: $color1;
     padding: 0.5rem 2rem;
     border-bottom: 1px solid #e0e0e08c;
+
     h1{
         letter-spacing: -1px;
     }
@@ -104,6 +116,24 @@ $color3: rgb(0, 104, 136);
         > div{
             @include flex(column, flex-start, center, 0.25rem);
         }
+    }
+
+    .nav-cart{
+      position: relative;
+
+      .cart-item-number{
+        position: absolute;
+        bottom: -10%;
+        right: -60%;
+        background-color: red;
+        color: white;
+        width: 20px;
+        height: 20px;
+        scale: 0.8;
+        border-radius: 50%;
+        font-size: 15px;
+        text-align: center;
+      }
     }
 
     .logo{

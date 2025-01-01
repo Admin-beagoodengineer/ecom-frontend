@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { CustomError } from "../types/api.types";
 import { Skeleton } from "../components/Loader";
 import { RootState } from "../redux/store";
+import { Link } from "react-router-dom";
 
 type DataType = {
     _id: string;
@@ -15,34 +16,34 @@ type DataType = {
     quantity: number;
     discount: number;
     status: ReactElement;
-    // action: ReactElement;
+    action: ReactElement;
 }
 
-const column: Column<DataType>[] = [
+const columns: Column<DataType>[] = [
     {
         Header: "ID",
         accessor: "_id"
     },
-    {
-        Header: "Quantity",
-        accessor: "quantity"
-    },
-    {
-        Header: "Discount",
-        accessor: "discount"
-    },
-    {
-        Header: "Amount",
-        accessor: "amount"
-    },
+    // {
+    //     Header: "Quantity",
+    //     accessor: "quantity"
+    // },
+    // {
+    //     Header: "Discount",
+    //     accessor: "discount"
+    // },
+    // {
+    //     Header: "Amount",
+    //     accessor: "amount"
+    // },
     {
         Header: "Status",
         accessor: "status"
     },
-    // {
-    //     Header: "Action",
-    //     accessor: "action"
-    // },
+    {
+        Header: "Action",
+        accessor: "action"
+    },
 ]
 
 function Orders() {
@@ -50,7 +51,13 @@ function Orders() {
     const {isLoading, data, isError, error} = useMyOrdersQuery(user?._id!);
 
     const [rows, setRows] = useState<DataType[]>([]);
-    const Table = TableHOC<DataType>(column, rows, "dashboard-product-box", "Orders", rows.length > 6)();
+    const Table = TableHOC<DataType>(
+        columns,
+        rows,
+        "dashboard-product-box",
+        "Orders",
+        rows.length > 6
+      )();
 
     if(isError) {
         const err = error as CustomError;
@@ -58,15 +65,36 @@ function Orders() {
     }
     
     useEffect(() => {
-    if(data) setRows(data.orders.map((i) => ({
-        _id: i._id.match(/\d+/g)?.join("").slice(-3).padStart(3, "0") || "",
-        amount: i.total,
-        discount: i.discount,
-        quantity: i.orderItems.length,
-        status: <span className={i.status === "Processing" ? "red" : i.status === "Shipped" ? "green" : "purple"}>{i.status}</span>,
-        // action: <Link to={`/admin/transaction/${i._id}`}>Manage</Link>
-    })));
-    }, [data]);
+        if (data)
+          setRows(
+            data.orders.map((i) => ({
+              _id: i._id.match(/\d+/g)?.join("").slice(-3).padStart(3, "0") || "",
+              amount: i.total,
+              discount: i.discount,
+              quantity: i.orderItems.length,
+              status: (
+                <span
+                  className={
+                    i.status === "Processing"
+                      ? "red"
+                      : i.status === "Shipped"
+                      ? "green"
+                      : "purple"
+                  }
+                >
+                  {i.status}
+                </span>
+              ),
+              action: (
+                <div>
+                  <Link to={`/order/${i._id}`} className="btn btn-primary">
+                    View Info
+                  </Link>
+                </div>
+              ),
+            }))
+          );
+      }, [data]);
 
   return (
     <div className="container">

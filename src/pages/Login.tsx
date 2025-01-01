@@ -12,6 +12,7 @@ import { userExist, userNotExist } from "../redux/reducer/userReducer";
 function Login() {
   const [gender, setGender] = useState("");
   const [date, setDate] = useState("");
+  const [phone, setPhone] = useState("");
   const dispatch = useDispatch();
 
   const [login] = useLoginMutation();
@@ -25,6 +26,7 @@ function Login() {
         name: user.displayName!,
         email: user.email!,
         photo: user.photoURL!,
+        phone,
         gender,
         role: "user",
         dob: date,
@@ -48,7 +50,7 @@ function Login() {
   return (
     <div className="login">
       <main>
-        <h1 className="heading">Login</h1>
+        {/* <h1 className="heading">Login</h1> */}
         <div>
           <label htmlFor="">Gender</label>
           <select value={gender} onChange={(e) => setGender(e.target.value)}>
@@ -56,6 +58,11 @@ function Login() {
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
+        </div>
+
+        <div>
+          <label>Phone Number</label>
+          <input type="text" value={phone} onChange={e => setPhone(e.target.value)} />
         </div>
 
         <div>
